@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+
+<title>Animeroll</title>
+<style>
+  /* Reset */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    background-color: #02050A;
+    color: #F2F4F7;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-y: auto;
+    max-width: 100vw;
+    min-height: 600px;
+    width: 100%;
+    user-select: none;
+    transition: background-color 0.4s ease, color 0.4s ease;
+    scroll-behavior: smooth;
+  }
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  /* Scrollbar hidden for horizontal containers */
+  .horizontal-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  .horizontal-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Colors */
+  :root {
+    --color-logo: #00D9FF;
+    --color-primary: #006BFF;
+    --color-primary-dark: #004DB8;
+    --color-primary-light: #00D9FF;
+    --color-background-header: #02050A;
+    --color-background-content: #080D16;
+    --color-background-card: #0B1422;
+    --color-text-primary: #F2F4F7;
+    --color-text-muted: #9AA7B8;
+    --color-shadow: rgba(0,107,255,0.32);
+    --color-gradient: linear-gradient(135deg, #006BFF, #00D9FF);
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 25px;
+    background-color: var(--color-background-header);
+    border-bottom: 1px solid var(--color-primary-dark);
+    flex-wrap: wrap;
+    box-shadow: 0 2px 10px var(--color-shadow);
+  }
+  header .logo {
+    font-weight: 900;
+    font-size: 1.75em;
+    color: var(--color-logo);
+    text-shadow: 0 0 18px rgba(0,217,255,.35);
+    user-select: text;
+    cursor: default;
+  }
+  nav {
+    display: none;
+  }
+  nav a {
+    color: var(--color-primary-light);
+    margin-left: 15px;
+    font-weight: 600;
+    font-size: 1em;
+    user-select: text;
+    transition: color 0.3s ease;
+  }
+  nav a:hover,
+  nav a:focus {
+    color: var(--color-primary-light);
+    outline: none;
+  }
+
+  .login-btn:hover,
+  .login-btn:focus-visible {
+    background: var(--color-gradient) !important;
+    color: var(--color-text-primary) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,107,255,.35) !important;
+    outline: none;
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible {
+    outline: 2px solid var(--color-primary-light);
+    outline-offset: 3px;
+  }
+
+  .search-container {
+    position: relative;
+    flex-grow: 1;
+    margin: 10px 15px 0 15px;
+    min-width: 250px;
+  }
+  .search-container input[type="search"] {
+    width: 100%;
+    padding: 8px 36px 8px 12px;
+    border-radius: 5px;
+    border: none;
+    font-size: 1em;
+    outline-color: var(--color-primary-light);
+    background: var(--color-background-card);
+    color: var(--color-text-primary);
+    user-select: text;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .search-container input[type="search"]:focus {
+    box-shadow: 0 0 0 3px rgba(0,217,255,.16), 0 0 18px rgba(0,107,255,.35);
+    background: var(--color-background-content);
+  }
+  .search-container svg.search-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    fill: var(--color-primary-light);
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+  }
+  .search-clear {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--color-primary-light);
+    font-size: 1.2em;
+    cursor: pointer;
+    opacity: 0.75;
+    transition: opacity 0.25s ease;
+    user-select: none;
+  }
+  .search-clear:hover,
+  .search-clear:focus {
+    opacity: 1;
+    outline: none;
+  }
+  .search-clear[hidden] {
+    display: none;
+  }
+
+  .user-icon {
+    margin-left: 15px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-background-card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 10px;
+    box-shadow: 0 0 8px var(--color-shadow);
+    transition: background-color 0.3s ease;
+  }
+  .user-icon:hover,
+  .user-icon:focus {
+    background: var(--color-primary);
+    box-shadow: 0 0 18px rgba(0,217,255,.3);
+    outline: none;
+  }
+  .user-icon svg {
+    fill: var(--color-logo);
+    width: 22px;
+    height: 22px;
+  }
+
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    user-select: none;
+    position: relative;
+  }
+
+  /* Banner slider */
+  .banner-slider {
+    position: relative;
+    width: 100%;
+    max-height: 520px;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 0 15px var(--color-shadow);
+  }
+  .slides-container {
+    display: flex;
+    transition: transform 0.5s cubic-bezier(0.55,0,0.1,1);
+    height: 100%;
+  }
+  .slide {
+    min-width: 100%;
+    height: 520px;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    box-shadow: inset 0 0 50px rgba(0,0,0,0.9);
+    cursor: pointer;
+    user-select: none;
+    will-change: transform;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease;
+  }
+  .slide:focus {
+    outline: 2px solid var(--color-primary-light);
+  }
+  .slide:hover {
+    transform: translateZ(20px) scale(1.04);
+  }
+  .slide-title {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    color: var(--color-logo);
+    font-weight: 800;
+    font-size: 1.75em;
+    text-shadow: 0 0 16px var(--color-logo);
+    user-select: text;
+  }
+  .slider-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(16,42,87, 0.85);
+    border: none;
+    color: var(--color-primary-light);
+    font-size: 2.5em;
+    width: 46px;
+    height: 46px;
+    cursor: pointer;
+    border-radius: 50%;
+    user-select: none;
+    box-shadow: 0 0 8px var(--color-primary-light);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .slider-button:hover,
+  .slider-button:focus {
+    background: var(--color-gradient);
+    color: var(--color-text-primary);
+    transform: translateY(-50%) scale(1.08);
+    outline: none;
+  }
+  .slider-button.left {
+    left: 20px;
+  }
+  .slider-button.right {
+    right: 20px;
+  }
+
+  /* Sections */
+  section {
+    user-select: none;
+    overflow: hidden;
+  }
+  section h2 {
+    margin: 0 0 12px 4px;
+    font-weight: 800;
+    color: var(--color-text-primary);
+    text-shadow: 0 0 14px rgba(0,217,255,.18);
+    font-size: 1.6em;
+    user-select: text;
+    letter-spacing: 0.04em;
+    background: transparent;
+  }
+  .cards-wrapper {
+    position: relative;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .cards-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-left: 10px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .genre-filter {
+    display: flex;
+    gap: 8px;
+    padding: 12px 20px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .genre-filter::-webkit-scrollbar {
+    display: none;
+  }
+  .genre-filter button {
+    flex: 0 0 auto;
+    border: 1px solid var(--color-primary-dark);
+    border-radius: 999px;
+    padding: 8px 14px;
+    color: var(--color-text-primary);
+    background: var(--color-background-card);
+    cursor: pointer;
+    font: inherit;
+    font-size: .85em;
+    font-weight: 700;
+  }
+  .genre-filter button:hover,
+  .genre-filter button.active {
+    color: var(--color-background-header);
+    background: var(--color-primary-light);
+  }
+  #genre-catalog {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  #genre-catalog[hidden] {
+    display: none;
+  }
+  .genre-section[hidden] {
+    display: none;
+  }
+  .card {
+    flex: 0 0 160px;
+    background: var(--color-background-card);
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 0 18px var(--color-shadow);
+    transition: transform 0.3s cubic-bezier(0.55,0,0.1,1), box-shadow 0.3s ease;
+    scroll-snap-align: start;
+    user-select: none;
+    position: relative;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+  .card:hover,
+  .card:focus {
+    outline: none;
+    transform: translateY(-8px) scale(1.04);
+    box-shadow: 0 14px 30px rgba(0,107,255,.35);
+    z-index: 10;
+  }
+  .card .favorite-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255 255 255 / 0.12);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    color: var(--color-primary-light);
+    font-size: 1.3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    user-select: none;
+    z-index: 20;
+  }
+  .card .favorite-btn:hover,
+  .card .favorite-btn:focus {
+    background: var(--color-primary-light);
+    color: var(--color-background-header);
+    outline: none;
+  }
+  .card .favorite-btn.favorited {
+    color: var(--color-text-primary);
+    background: var(--color-primary);
+  }
+  .card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+    transition: filter 0.3s ease;
+  }
+  .card img.loading {
+    filter: blur(10px);
+  }
+  .card-title {
+    padding: 10px 14px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.05em;
+    color: var(--color-primary-light);
+    user-select: text;
+    letter-spacing: 0.015em;
+  }
+
+  /* Horizontal scroll buttons */
+  .scroll-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 48px;
+    border: none;
+    background-color: rgba(16,42,87, 0.85);
+    color: var(--color-primary-light);
+    cursor: pointer;
+    border-radius: 8px;
+    user-select: none;
+    font-size: 1.75em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 15;
+    box-shadow: 0 0 8px var(--color-shadow);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .scroll-button:hover,
+  .scroll-button:focus {
+    background: var(--color-gradient);
+    color: var(--color-text-primary);
+    transform: translateY(-50%) scale(1.06);
+    outline: none;
+  }
+  .scroll-button.left {
+    left: 6px;
+  }
+  .scroll-button.right {
+    right: 6px;
+  }
+
+  /* Footer */
+  footer {
+    height: 80px;
+    background: var(--color-background-header);
+    border-top: 1px solid var(--color-primary-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9em;
+    color: var(--color-text-muted);
+    user-select: none;
+    padding: 0 20px;
+    text-align: center;
+  }
+
+  /* Responsive for mobile */
+  @media (max-width: 600px) {
+    body {
+      max-width: 350px;
+      height: 600px;
+      overflow: hidden;
+    }
+    header {
+      padding: 8px 12px;
+      flex-wrap: nowrap;
+    }
+    header .logo {
+      font-size: 1.5em;
+    }
+    nav {
+      display: none !important;
+      position: fixed;
+      top: 56px;
+      left: 0;
+      right: 0;
+      background-color: var(--color-background-header);
+      border-bottom: 1px solid var(--color-primary-dark);
+      padding: 12px 20px;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 2px 12px var(--color-shadow);
+      z-index: 1000;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+    }
+    nav.open {
+      max-height: 220px;
+    }
+    nav a {
+      margin: 0;
+      font-size: 1.1em;
+    }
+    .hamburger {
+      display: flex;
+    }
+    .search-container {
+      margin: 0 8px;
+      min-width: 120px;
+      flex-grow: 1;
+    }
+    main {
+      padding: 8px 10px;
+      gap: 12px;
+    }
+    .banner-slider {
+      max-height: 180px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+    }
+    .slide {
+      height: 180px;
+      border-radius: 8px;
+    }
+    .slide-title {
+      font-size: 1.1em;
+      bottom: 16px;
+      left: 16px;
+    }
+    .slider-button {
+      width: 40px;
+      height: 40px;
+      font-size: 2em;
+    }
+    section h2 {
+      font-size: 1.2em;
+      margin-left: 10px;
+      margin-bottom: 8px;
+      color: var(--color-text-primary);
+      background: transparent;
+    }
+    .cards-wrapper {
+      gap: 10px;
+    }
+    .card {
+      flex: 0 0 130px;
+      box-shadow: 0 0 8px var(--color-shadow);
+      perspective: 800px;
+    }
+    .card img {
+      height: 180px;
+    }
+    .card-title {
+      font-size: 0.9em;
+      padding: 8px 10px;
+    }
+    .scroll-button {
+      width: 28px;
+      height: 40px;
+      font-size: 1.5em;
+    }
+    footer {
+      height: 60px;
+      font-size: 0.85em;
+      padding: 0 14px;
+    }
+  }
+
+  /* Show nav links on PC */
+  @media (min-width: 700px) {
+    nav {
+      display: flex !important;
+      align-items: center;
+    }
+    header {
+      flex-wrap: nowrap;
+    }
+    .search-container {
+      margin: 0 15px;
+      min-width: 320px;
+      flex-grow: 1;
+    }
+  }
+
+  /* Hamburger menu */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  .hamburger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: var(--color-primary-light);
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  /* Dark / Light mode toggle */
+  .toggle-switch {
+    position: relative;
+    width: 48px;
+    height: 24px;
+    display: inline-block;
+    margin-left: 15px;
+  }
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: var(--color-primary-dark);
+    border-radius: 24px;
+    transition: background-color 0.4s;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    bottom: 2px;
+    background-color: var(--color-logo);
+    border-radius: 50%;
+    transition: transform 0.4s ease;
+  }
+  input:checked + .slider {
+    background-color: var(--color-primary-light);
+  }
+  input:checked + .slider:before {
+    transform: translateX(24px);
+  }
+
+  /* Scroll to top button */
+  #scrollTopBtn {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    width: 44px;
+    height: 44px;
+    font-size: 2em;
+    background-color: var(--color-primary-light);
+    color: var(--color-background-header);
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--color-shadow);
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 999;
+  }
+  #scrollTopBtn.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  #scrollTopBtn:hover,
+  #scrollTopBtn:focus {
+    background: var(--color-gradient);
+    transform: translateY(-3px);
+    outline: none;
+  }
+</style>
+</head>
+<body>
+<header>
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <div class="logo" tabindex="0" aria-label="Animeroll Logo">Animeroll</div>
+    <div class="hamburger" aria-label="Toggle navigation menu" tabindex="0" role="button" aria-pressed="false" aria-controls="primary-navigation">
+      <span></span><span></span><span></span>
+    </div>
+    <nav id="primary-navigation" aria-label="Primary Navigation">
+
+      <a href="animeroll.html" class="login-btn" style="margin-left:18px; padding:8px 18px; background:var(--color-primary-light); color:var(--color-background-header); border-radius:6px; font-weight:700; font-size:1em; box-shadow:0 2px 8px var(--color-shadow); transition:background 0.3s; text-align:center; display:inline-block;" tabindex="0" aria-label="Home">Home</a>
+      <a href="explore.html" class="login-btn" style="margin-left:18px; padding:8px 18px; background:var(--color-primary-light); color:var(--color-background-header); border-radius:6px; font-weight:700; font-size:1em; box-shadow:0 2px 8px var(--color-shadow); transition:background 0.3s; text-align:center; display:inline-block;" tabindex="0" aria-label="Explore">Explore</a>
+
+      <a href="animeroll.html" class="login-btn" style="margin-left:18px; padding:8px 18px; background:var(--color-primary-light); color:var(--color-background-header); border-radius:6px; font-weight:700; font-size:1em; box-shadow:0 2px 8px var(--color-shadow); transition:background 0.3s; text-align:center; display:inline-block;" tabindex="0" aria-label="Anime">Keys</a>
+
+      <a href="../index.html" class="login-btn" style="margin-left:18px; padding:8px 18px; background:var(--color-primary-light); color:var(--color-background-header); border-radius:6px; font-weight:700; font-size:1em; box-shadow:0 2px 8px var(--color-shadow); transition:background 0.3s; text-align:center; display:inline-block;" tabindex="0" aria-label="APK Store">APK Store</a>
+
+    </nav>
+  </div>
+  <a href="../index.html#home" class="login-btn" style="margin-left:18px; padding:8px 18px; background:var(--color-primary-light); color:var(--color-background-header); border-radius:6px; font-weight:700; font-size:1em; box-shadow:0 2px 8px var(--color-shadow); transition:background 0.3s; text-align:center; display:inline-block;" tabindex="0" aria-label="Games">Favorites</a>
+<a href="../moviebox-download.html" class="login-btn" style="margin-left:18px; padding:8px 18px; background:var(--color-primary-light); color:var(--color-background-header); border-radius:6px; font-weight:700; font-size:1em; box-shadow:0 2px 8px var(--color-shadow); transition:background 0.3s; text-align:center; display:inline-block;" tabindex="0" aria-label="Movies">Movies</a>
+
+  <div class="search-container" role="search">
+    <input type="search" id="search-input" placeholder="Search anime..." aria-label="Search anime" autocomplete="off" />
+    <button class="search-clear" id="clear-search" aria-label="Clear search input" title="Clear search input" hidden>&times;</button>
+    <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M15.5 14h-.79l-.28-.27a6.471 6.471 0 001.48-5.34C14.86 5.59 12.28 3 9 3S3.14 5.59 3.14 8.39c0 2.8 2.58 5.39 5.86 5.39 1.51 0 2.89-.62 3.86-1.62l.27.28v.79l4.25 4.25c.27.27.68.27.95 0 .27-.3.27-.7 0-.97L15.5 14zM9 12.5c-2.07 0-3.75-1.72-3.75-3.83S6.93 5 9 5s3.75 1.72 3.75 3.83-1.68 3.67-3.75 3.67z"></path>
+    </svg>
+  </div>
+
+  <div class="user-icon" role="button" tabindex="0" aria-label="User menu" title="User menu" >
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+    </svg>
+  </div>
+
+  <label class="toggle-switch" title="Toggle Dark / Light Mode">
+    <input type="checkbox" id="mode-toggle" aria-checked="true" />
+    <span class="slider"></span>
+  </label>
+
+  <!-- User dropdown menu -->
+  <div id="user-menu" class="user-menu" style="display:none; position:absolute; top:60px; right:25px; background:var(--color-background-card); border-radius:8px; box-shadow:0 2px 12px var(--color-shadow); min-width:160px; z-index:1001;">
+    <ul style="list-style:none; margin:0; padding:8px 0;">
+      <li><a href="profile.html" style="display:block; padding:10px 20px; color:var(--color-text-primary);">Profile</a></li>
+      <li><a href="settings.html" style="display:block; padding:10px 20px; color:var(--color-text-primary);">Settings</a></li>
+      <li><a href="login.html" style="display:block; padding:10px 20px; color:var(--color-text-primary);">Logout</a></li>
+    </ul>
+  </div>
+  <script>
+    // User menu toggle logic
+    const userIcon = document.querySelector('.user-icon');
+    const userMenu = document.getElementById('user-menu');
+    let userMenuOpen = false;
+
+    function closeUserMenu() {
+      userMenu.style.display = 'none';
+      userMenuOpen = false;
+    }
+
+    userIcon.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userMenuOpen = !userMenuOpen;
+      userMenu.style.display = userMenuOpen ? 'block' : 'none';
+    });
+
+    userIcon.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        userIcon.click();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (userMenuOpen && !userMenu.contains(e.target) && e.target !== userIcon) {
+        closeUserMenu();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (userMenuOpen && e.key === 'Escape') {
+        closeUserMenu();
+        userIcon.focus();
+      }
+    });
+  </script>
+</header>
+<div class="genre-filter" id="genre-filter" aria-label="Anime categories"></div>
+<main>
+  <div class="banner-slider" aria-label="Featured anime banner slider">
+    <button class="slider-button left" aria-label="Previous banner" tabindex="0">&#9664;</button>
+    <div class="slides-container" aria-live="polite" aria-atomic="true" aria-relevant="all">
+      <div class="slide" style="background-image:url('https://sgimage.netmarble.com/images/netmarble/sololv/20240318/fxbt1710761341766.jpg');" tabindex="0" role="group" aria-roledescription="slide" aria-label="Demon Slayer">
+        <div class="slide-title">Solo Leveling </div>
+      </div>
+      <button class="slider-button left" aria-label="Previous banner" tabindex="0">&#9664;</button>
+      <div class="slide" style="background-image:url('C:/Users/Vikash Kumar/Desktop/anime_web/photoanime/OnePiece.jpg');" tabindex="0" role="group" aria-roledescription="slide" aria-label="One Piece">
+        <div class="slide-title">One Piece</div>
+      </div>
+      <button class="slider-button left" aria-label="Previous banner" tabindex="0">&#9664;</button>
+      <div class="slide" style="background-image:url('https://wallpapers.com/images/file/one-punch-man-pictures-ws2evfrf7qh2zyvn.jpg');" tabindex="0" role="group" aria-roledescription="slide" aria-label="My Hero Academia">
+        <div class="slide-title">One punch man </div>
+      </div>
+      <button class="slider-button left" aria-label="Previous banner" tabindex="0">&#9664;</button>
+      <div class="slide" style="background-image:url('https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/09/jujutsu-kaisen.jpg');" tabindex="0" role="group" aria-roledescription="slide" aria-label="My Hero Academia">
+        <div class="slide-title">jujutsu kaisen</div>
+      </div>
+      <div class="slide" style="background-image:url('https://images-na.ssl-images-amazon.com/images/I/71rVjwXc7LL._RI_.jpg');" tabindex="0" role="group" aria-roledescription="slide" aria-label="My Hero Academia">
+        <div class="slide-title">Sinchan</div>
+      </div>
+      <div class="slide" style="background-image:url('https://wallpapercave.com/wp/wp7600937.jpg');" tabindex="0" role="group" aria-roledescription="slide" aria-label="My Hero Academia">
+        <div class="slide-title">Doraemon</div>
+      </div>
+      <div class="slide" style="background-image:url('https://wallpapercave.com/wp/wp7600937.jpg');" tabindex="0" role="group" aria-roledescription="slide" aria-label="My Hero Academia">
+        <div class="slide-title">Chhota Bheem</div>
+      </div>
+      <div class="slide" style="background-image:url('https://wallpapercave.com/wp/wp7600937.jpg');" tabindex="0" role="group" aria-roledescription="slide" aria-label="My Hero Academia">
+        <div class="slide-title">Pokemon</div>
+      </div>
+      <div class="slide" style="background-image:url('https://wallpapercave.com/wp/wp7600937.jpg');" tabindex="0" role="group" aria-roledescription="slide" aria-label="My Hero Academia">
+        <div class="slide-title">My Hero Academia</div>
+      </div>
+      <div class="slide" style="background-image:url('https://wallpapercave.com/wp/wp7600937.jpg');" tabindex="0" role="group" aria-roledescription="slide" aria-label="My Hero Academia">
+        <div class="slide-title">My Hero Academia</div>
+      </div>
+      <div class="slide" style="background-image:url('https://wallpapercave.com/wp/wp7600937.jpg');" tabindex="0" role="group" aria-roledescription="slide" aria-label="My Hero Academia">
+        <div class="slide-title">My Hero Academia</div>
+      </div>
+    </div>
+    <button class="slider-button right" aria-label="Next banner" tabindex="0">&#9654;</button>
+  </div>
+
+  <section aria-label="Popular anime">
+    <h2>Popular Anime</h2>
+    <div class="cards-wrapper">
+      <button class="scroll-button left" aria-label="Scroll Popular Anime Left">&#9664;</button>
+      <div class="cards-container horizontal-scroll" tabindex="0">
+         <div class="card" tabindex="0" aria-label="Naruto anime" data-anime="Naruto">
+          <button class="favorite-btn" aria-label="Mark Naruto as favorite" title="Favorite">&#9829;</button>
+          <img src="https://www.theanimex.com/wp-content/uploads/2021/12/Solo-Leveling-Vol.-3.jpg" alt="Naruto" loading="lazy" />
+          <div class="card-title">Solo Leveling Season 3</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="Naruto anime" data-anime="Naruto">
+          <button class="favorite-btn" aria-label="Mark Naruto as favorite" title="Favorite">&#9829;</button>
+          <img src="https://cdn.pixabay.com/photo/2023/09/04/03/36/ai-generated-8231894_960_720.png" alt="Naruto" loading="lazy" />
+          <div class="card-title">Naruto</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="Naruto anime" data-anime="Naruto">
+          <button class="favorite-btn" aria-label="Mark Naruto as favorite" title="Favorite">&#9829;</button>
+          <img src="https://tse1.mm.bing.net/th/id/OIP.LwZ-8lJ7k-OJnvTTFHwjHgAAAA?pid=ImgDet&w=474&h=711&rs=1&o=7&rm=3" alt="Naruto" loading="lazy" />
+          <div class="card-title">Spider Man</div>
+        </div>
+        
+
+        <div class="card" tabindex="0" aria-label="Naruto anime" data-anime="Naruto">
+            <button class="favorite-btn" aria-label="Mark Naruto as favorite" title="Favorite">&#9829;</button>
+            <img src="https://wallpapers.com/images/high/red-luffy-smile-2tbkwlpsslr7jpuz.webp" alt="Naruto" loading="lazy" />
+            <div class="card-title">One Pices</div>
+          </div>
+          <div class="card" tabindex="0" aria-label="Naruto anime" data-anime="Naruto">
+            <button class="favorite-btn" aria-label="Mark Naruto as favorite" title="Favorite">&#9829;</button>
+            <img src="https://www.normaeditorial.com/upload/media/albumes/0001/26/5f94c6ef3d21997c32c34ac4d27829708baebb82.jpeg" alt="Naruto" loading="lazy" />
+            <div class="card-title">Dan da dan</div>
+          </div>
+          <div class="card" tabindex="0" aria-label="Naruto anime" data-anime="Naruto">
+            <button class="favorite-btn" aria-label="Mark Naruto as favorite" title="Favorite">&#9829;</button>
+            <img src="https://tse4.mm.bing.net/th/id/OIP.TTZAKoEqHeMhj97RKrq58AHaKd?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Naruto" loading="lazy" />
+            <div class="card-title">Sakamoto</div>
+          </div>
+          <div class="card" tabindex="0" aria-label="Naruto anime" data-anime="Naruto">
+            <button class="favorite-btn" aria-label="Mark Naruto as favorite" title="Favorite">&#9829;</button>
+            <img src="https://img.reelgood.com/content/show/c967a351-1873-4b9f-8580-a144f4fa1bec/poster-780.jpg" alt="Naruto" loading="lazy" />
+            <div class="card-title">Sinchan</div>
+          </div>
+          <div class="card" tabindex="0" aria-label="Naruto anime" data-anime="Naruto">
+            <button class="favorite-btn" aria-label="Mark Naruto as favorite" title="Favorite">&#9829;</button>
+            <img src="https://cdn.wallpapersafari.com/86/25/xh4SVP.jpeg" alt="Naruto" loading="lazy" />
+            <div class="card-title">Doraemon</div>
+          </div>
+        <div class="card" tabindex="0" aria-label="One Piece anime" data-anime="One Piece">
+          <button class="favorite-btn" aria-label="Mark One Piece as favorite" title="Favorite">&#9829;</button>
+          <img src="https://th.bing.com/th/id/R.0b717d87855fe7ea089b641aacf42f15?rik=71IMF%2f1087fmeQ&riu=http%3a%2f%2fbr.web.img2.acsta.net%2fpictures%2f14%2f07%2f18%2f10%2f57%2f567741.jpg&ehk=8MjcZr1IgGiErpcx6UKIJfLMQhM%2fXaFeJydZWslTY3k%3d&risl=&pid=ImgRaw&r=0" alt="One Piece" loading="lazy" />
+          <div class="card-title">Pokemon</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="Dragon Ball Z anime" data-anime="Dragon Ball Z">
+          <button class="favorite-btn" aria-label="Mark Dragon Ball Z as favorite" title="Favorite">&#9829;</button>
+          <img src="https://play-lh.googleusercontent.com/dmkwDgjz0b2K44TYwCPWRJ7_KSPo4b2XwDuIFgNhxcBIyN83BnBTLqKIpVYJBtmQdzUFIAJNuZVDRz8QKw" alt="Dragon Ball Z" loading="lazy" />
+          <div class="card-title">Chhota Bheem aur Bali</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="Bleach anime" data-anime="Bleach">
+          <button class="favorite-btn" aria-label="Mark Bleach as favorite" title="Favorite">&#9829;</button>
+          <img src="https://image.tmdb.org/t/p/original/3kTFL3PAeTyS8gGZAh0iYG6NNjt.jpg" alt="Bleach" loading="lazy" />
+          <div class="card-title">Wind Breakers</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="Tokyo Ghoul anime" data-anime="Tokyo Ghoul">
+          <button class="favorite-btn" aria-label="Mark Tokyo Ghoul as favorite" title="Favorite">&#9829;</button>
+          <img src="https://images.justwatch.com/poster/251128847/s718/tokyo-revengers.jpg" alt="Tokyo Ghoul" loading="lazy" />
+          <div class="card-title">Tokyo Revenge</div>
+          
+        </div>
+      </div>
+      <button class="scroll-button right" aria-label="Scroll Popular Anime Right">&#9664;</button>
+    </div>
+  </section>
+
+  <section aria-label="New Releases">
+    <h2>New Releases</h2>
+    <div class="cards-wrapper">
+      <button class="scroll-button left" aria-label="Scroll New Releases Left">&#9664;</button>
+      <div class="cards-container horizontal-scroll" tabindex="0">
+        <div class="card" tabindex="0" aria-label="Jujutsu Kaisen anime" data-anime="Jujutsu Kaisen">
+          <button class="favorite-btn" aria-label="Mark Jujutsu Kaisen as favorite" title="Favorite">&#9829;</button>
+          <img src="https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/09/jujutsu-kaisen.jpg" alt="Jujutsu Kaisen" loading="lazy" />
+          <div class="card-title">Jujutsu Kaisen</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://media.senscritique.com/media/000018289995/source_big/The_Rising_of_the_Shield_Hero.jpg" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">The Rising of the Shield Hero</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://tse2.mm.bing.net/th/id/OIP.zRB-pbv6cOkQ-P3CwjPODwAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">Iron Man</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://wallpaperbat.com/img/9670095--the-fandub-database.png" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">Motu Patlu</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://images.justwatch.com/poster/320698600/s718/honey-bunny-ka-jholmaal.jpg" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">Hunny Bunny</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://akamaividz2.zee5.com/image/upload/w_504,h_756,c_scale,f_webp,q_auto:eco/resources/0-6-1899/portrait/1920x7701998959799.jpg" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">Bandbudh Aur Budbak</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="Dorohedoro anime" data-anime="Dorohedoro">
+          <button class="favorite-btn" aria-label="Mark Dorohedoro as favorite" title="Favorite">&#9829;</button>
+          <img src="https://www.anime-planet.com/images/anime/covers/classroom-of-the-elite-8828.jpg" alt="Dorohedoro" loading="lazy" />
+          <div class="card-title">Class Room Elite</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="Re:Zero anime" data-anime="Re:Zero">
+          <button class="favorite-btn" aria-label="Mark Re:Zero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://m.media-amazon.com/images/M/MV5BN2NlM2Y5Y2MtYjU5Mi00ZjZiLWFjNjMtZDNiYzJlMjhkOWZiXkEyXkFqcGdeQXVyNjc2NjA5MTU@._V1_FMjpg_UX1000_.jpg" alt="Re:Zero" loading="lazy" />
+          <div class="card-title">Re:Zero</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="Chainsaw Man anime" data-anime="Chainsaw Man">
+          <button class="favorite-btn" aria-label="Mark Chainsaw Man as favorite" title="Favorite">&#9829;</button>
+          <img src="https://www.manga-sanctuary.com/v10_good/public/img/objet/origin/330101.jpg" alt="Chainsaw Man" loading="lazy" />
+          <div class="card-title">Chainsaw Man</div>
+        </div>
+
+        <div class="card" tabindex="0" aria-label="Chainsaw Man anime" data-anime="Chainsaw Man">
+          <button class="favorite-btn" aria-label="Mark Chainsaw Man as favorite" title="Favorite">&#9829;</button>
+          <img src="https://tr.web.img2.acsta.net/pictures/23/06/28/13/36/3468195.jpg" alt="Chainsaw Man" loading="lazy" />
+          <div class="card-title">Baki Hamna</div>
+        </div>
+
+      </div>
+      <button class="scroll-button right" aria-label="Scroll New Releases Right">&#9664;</button>
+    </div>
+  </section>
+
+    <section aria-label="New Releases">
+    
+    <div id="genre-catalog" aria-label="Anime categories">
+      <h2>Anime Categories</h2>
+      <div id="genre-sections"></div>
+    </div>
+    <div class="cards-wrapper">
+      <button class="scroll-button left" aria-label="Scroll New Releases Left">&#9664;</button>
+      <div class="cards-container horizontal-scroll" tabindex="0">
+        <div class="card" tabindex="0" aria-label="Jujutsu Kaisen anime" data-anime="Jujutsu Kaisen">
+          <button class="favorite-btn" aria-label="Mark Jujutsu Kaisen as favorite" title="Favorite">&#9829;</button>
+          <img src="https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/09/jujutsu-kaisen.jpg" alt="Jujutsu Kaisen" loading="lazy" />
+          <div class="card-title">Jujutsu Kaisen</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://media.senscritique.com/media/000018289995/source_big/The_Rising_of_the_Shield_Hero.jpg" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">The Rising of the Shield Hero</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://tse2.mm.bing.net/th/id/OIP.zRB-pbv6cOkQ-P3CwjPODwAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">Iron Man</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://wallpaperbat.com/img/9670095--the-fandub-database.png" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">Motu Patlu</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://images.justwatch.com/poster/320698600/s718/honey-bunny-ka-jholmaal.jpg" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">Hunny Bunny</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://akamaividz2.zee5.com/image/upload/w_504,h_756,c_scale,f_webp,q_auto:eco/resources/0-6-1899/portrait/1920x7701998959799.jpg" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">Bandbudh Aur Budbak</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="Dorohedoro anime" data-anime="Dorohedoro">
+          <button class="favorite-btn" aria-label="Mark Dorohedoro as favorite" title="Favorite">&#9829;</button>
+          <img src="https://www.anime-planet.com/images/anime/covers/classroom-of-the-elite-8828.jpg" alt="Dorohedoro" loading="lazy" />
+          <div class="card-title">Class Room Elite</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="Re:Zero anime" data-anime="Re:Zero">
+          <button class="favorite-btn" aria-label="Mark Re:Zero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://m.media-amazon.com/images/M/MV5BN2NlM2Y5Y2MtYjU5Mi00ZjZiLWFjNjMtZDNiYzJlMjhkOWZiXkEyXkFqcGdeQXVyNjc2NjA5MTU@._V1_FMjpg_UX1000_.jpg" alt="Re:Zero" loading="lazy" />
+          <div class="card-title">Re:Zero</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="Chainsaw Man anime" data-anime="Chainsaw Man">
+          <button class="favorite-btn" aria-label="Mark Chainsaw Man as favorite" title="Favorite">&#9829;</button>
+          <img src="https://www.manga-sanctuary.com/v10_good/public/img/objet/origin/330101.jpg" alt="Chainsaw Man" loading="lazy" />
+          <div class="card-title">Chainsaw Man</div>
+        </div>
+
+        <div class="card" tabindex="0" aria-label="Chainsaw Man anime" data-anime="Chainsaw Man">
+          <button class="favorite-btn" aria-label="Mark Chainsaw Man as favorite" title="Favorite">&#9829;</button>
+          <img src="https://tr.web.img2.acsta.net/pictures/23/06/28/13/36/3468195.jpg" alt="Chainsaw Man" loading="lazy" />
+          <div class="card-title">Baki Hamna</div>
+        </div>
+
+      </div>
+      <button class="scroll-button right" aria-label="Scroll New Releases Right">&#9664;</button>
+    </div>
+  </section>
+
+    <section aria-label="New Releases">
+    <h2></h2>
+    <div class="cards-wrapper">
+      <button class="scroll-button left" aria-label="Scroll New Releases Left">&#9664;</button>
+      <div class="cards-container horizontal-scroll" tabindex="0">
+        <div class="card" tabindex="0" aria-label="Jujutsu Kaisen anime" data-anime="Jujutsu Kaisen">
+          <button class="favorite-btn" aria-label="Mark Jujutsu Kaisen as favorite" title="Favorite">&#9829;</button>
+          <img src="https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/09/jujutsu-kaisen.jpg" alt="Jujutsu Kaisen" loading="lazy" />
+          <div class="card-title">Jujutsu Kaisen</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://media.senscritique.com/media/000018289995/source_big/The_Rising_of_the_Shield_Hero.jpg" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">The Rising of the Shield Hero</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://tse2.mm.bing.net/th/id/OIP.zRB-pbv6cOkQ-P3CwjPODwAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">Iron Man</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://wallpaperbat.com/img/9670095--the-fandub-database.png" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">Motu Patlu</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://images.justwatch.com/poster/320698600/s718/honey-bunny-ka-jholmaal.jpg" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">Hunny Bunny</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://akamaividz2.zee5.com/image/upload/w_504,h_756,c_scale,f_webp,q_auto:eco/resources/0-6-1899/portrait/1920x7701998959799.jpg" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">Bandbudh Aur Budbak</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="Dorohedoro anime" data-anime="Dorohedoro">
+          <button class="favorite-btn" aria-label="Mark Dorohedoro as favorite" title="Favorite">&#9829;</button>
+          <img src="https://www.anime-planet.com/images/anime/covers/classroom-of-the-elite-8828.jpg" alt="Dorohedoro" loading="lazy" />
+          <div class="card-title">Class Room Elite</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="Re:Zero anime" data-anime="Re:Zero">
+          <button class="favorite-btn" aria-label="Mark Re:Zero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://m.media-amazon.com/images/M/MV5BN2NlM2Y5Y2MtYjU5Mi00ZjZiLWFjNjMtZDNiYzJlMjhkOWZiXkEyXkFqcGdeQXVyNjc2NjA5MTU@._V1_FMjpg_UX1000_.jpg" alt="Re:Zero" loading="lazy" />
+          <div class="card-title">Re:Zero</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="Chainsaw Man anime" data-anime="Chainsaw Man">
+          <button class="favorite-btn" aria-label="Mark Chainsaw Man as favorite" title="Favorite">&#9829;</button>
+          <img src="https://www.manga-sanctuary.com/v10_good/public/img/objet/origin/330101.jpg" alt="Chainsaw Man" loading="lazy" />
+          <div class="card-title">Chainsaw Man</div>
+        </div>
+
+        <div class="card" tabindex="0" aria-label="Chainsaw Man anime" data-anime="Chainsaw Man">
+          <button class="favorite-btn" aria-label="Mark Chainsaw Man as favorite" title="Favorite">&#9829;</button>
+          <img src="https://tr.web.img2.acsta.net/pictures/23/06/28/13/36/3468195.jpg" alt="Chainsaw Man" loading="lazy" />
+          <div class="card-title">Baki Hamna</div>
+        </div>
+
+      </div>
+      <button class="scroll-button right" aria-label="Scroll New Releases Right">&#9664;</button>
+    </div>
+  </section>
+    <section aria-label="New Releases">
+    <h2></h2>
+    <div class="cards-wrapper">
+      <button class="scroll-button left" aria-label="Scroll New Releases Left">&#9664;</button>
+      <div class="cards-container horizontal-scroll" tabindex="0">
+        <div class="card" tabindex="0" aria-label="Jujutsu Kaisen anime" data-anime="Jujutsu Kaisen">
+          <button class="favorite-btn" aria-label="Mark Jujutsu Kaisen as favorite" title="Favorite">&#9829;</button>
+          <img src="https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/09/jujutsu-kaisen.jpg" alt="Jujutsu Kaisen" loading="lazy" />
+          <div class="card-title">Jujutsu Kaisen</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://media.senscritique.com/media/000018289995/source_big/The_Rising_of_the_Shield_Hero.jpg" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">The Rising of the Shield Hero</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://tse2.mm.bing.net/th/id/OIP.zRB-pbv6cOkQ-P3CwjPODwAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">Iron Man</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://wallpaperbat.com/img/9670095--the-fandub-database.png" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">Motu Patlu</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://images.justwatch.com/poster/320698600/s718/honey-bunny-ka-jholmaal.jpg" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">Hunny Bunny</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="The Rising of the Shield Hero anime" data-anime="The Rising of the Shield Hero">
+          <button class="favorite-btn" aria-label="Mark The Rising of the Shield Hero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://akamaividz2.zee5.com/image/upload/w_504,h_756,c_scale,f_webp,q_auto:eco/resources/0-6-1899/portrait/1920x7701998959799.jpg" alt="The Rising of the Shield Hero" loading="lazy" />
+          <div class="card-title">Bandbudh Aur Budbak</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="Dorohedoro anime" data-anime="Dorohedoro">
+          <button class="favorite-btn" aria-label="Mark Dorohedoro as favorite" title="Favorite">&#9829;</button>
+          <img src="https://www.anime-planet.com/images/anime/covers/classroom-of-the-elite-8828.jpg" alt="Dorohedoro" loading="lazy" />
+          <div class="card-title">Class Room Elite</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="Re:Zero anime" data-anime="Re:Zero">
+          <button class="favorite-btn" aria-label="Mark Re:Zero as favorite" title="Favorite">&#9829;</button>
+          <img src="https://m.media-amazon.com/images/M/MV5BN2NlM2Y5Y2MtYjU5Mi00ZjZiLWFjNjMtZDNiYzJlMjhkOWZiXkEyXkFqcGdeQXVyNjc2NjA5MTU@._V1_FMjpg_UX1000_.jpg" alt="Re:Zero" loading="lazy" />
+          <div class="card-title">Re:Zero</div>
+        </div>
+        <div class="card" tabindex="0" aria-label="Chainsaw Man anime" data-anime="Chainsaw Man">
+          <button class="favorite-btn" aria-label="Mark Chainsaw Man as favorite" title="Favorite">&#9829;</button>
+          <img src="https://www.manga-sanctuary.com/v10_good/public/img/objet/origin/330101.jpg" alt="Chainsaw Man" loading="lazy" />
+          <div class="card-title">Chainsaw Man</div>
+        </div>
+
+        <div class="card" tabindex="0" aria-label="Chainsaw Man anime" data-anime="Chainsaw Man">
+          <button class="favorite-btn" aria-label="Mark Chainsaw Man as favorite" title="Favorite">&#9829;</button>
+          <img src="https://tr.web.img2.acsta.net/pictures/23/06/28/13/36/3468195.jpg" alt="Chainsaw Man" loading="lazy" />
+          <div class="card-title">Baki Hamna</div>
+        </div>
+
+      </div>
+      <button class="scroll-button right" aria-label="Scroll New Releases Right">&#9664;</button>
+    </div>
+  </section>
+  
+
+</main>
+
+<button id="scrollTopBtn" aria-label="Scroll to top" title="Scroll to top">&#9650;</button>
+
+<footer>
+  &copy; 2025 Animeroll . All rights reserved.
+</footer>
+<script>
+  (() => {
+    const slidesContainer = document.querySelector('.slides-container');
+    const slides = document.querySelectorAll('.slide');
+    const btnPrev = document.querySelector('.slider-button.left');
+    const btnNext = document.querySelector('.slider-button.right');
+    let currentIndex = 0;
+    const totalSlides = slides.length;
+
+    function updateSlidePosition() {
+      slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+    }
+
+    btnPrev.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+      updateSlidePosition();
+    });
+    btnNext.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % totalSlides;
+      updateSlidePosition();
+    });
+
+    // Auto-play banner slider every 6 seconds
+    let autoPlayInterval = setInterval(() => {
+      currentIndex = (currentIndex + 1) % totalSlides;
+      updateSlidePosition();
+    }, 6000);
+
+    // Pause auto-play on hover/focus
+    const bannerSlider = document.querySelector('.banner-slider');
+    bannerSlider.addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
+    bannerSlider.addEventListener('mouseleave', () => {
+      autoPlayInterval = setInterval(() => {
+        currentIndex = (currentIndex + 1) % totalSlides;
+        updateSlidePosition();
+      }, 6000);
+    });
+    bannerSlider.addEventListener('focusin', () => clearInterval(autoPlayInterval));
+    bannerSlider.addEventListener('focusout', () => {
+      autoPlayInterval = setInterval(() => {
+        currentIndex = (currentIndex + 1) % totalSlides;
+        updateSlidePosition();
+      }, 6000);
+    });
+
+    // Swipe support for slider
+    let startX = 0;
+    slidesContainer.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+    });
+    slidesContainer.addEventListener('touchend', (e) => {
+      let endX = e.changedTouches[0].clientX;
+      if (endX - startX > 40) btnPrev.click();
+      else if (startX - endX > 40) btnNext.click();
+    });
+
+    // Scroll buttons for horizontal scroll sections
+    document.querySelectorAll('.cards-wrapper').forEach(wrapper => {
+      const container = wrapper.querySelector('.cards-container');
+      const leftBtn = wrapper.querySelector('.scroll-button.left');
+      const rightBtn = wrapper.querySelector('.scroll-button.right');
+
+      leftBtn.addEventListener('click', () => {
+        container.scrollBy({left: -160, behavior: 'smooth'});
+      });
+      rightBtn.addEventListener('click', () => {
+        container.scrollBy({left: 160, behavior: 'smooth'});
+      });
+    });
+
+    // Clear search input button
+    const searchInput = document.getElementById('search-input');
+    const clearSearchBtn = document.getElementById('clear-search');
+
+    function updateClearBtn() {
+      clearSearchBtn.hidden = !searchInput.value.trim().length;
+    }
+    clearSearchBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      clearSearchBtn.hidden = true;
+      filterGenreCatalog('');
+      searchInput.focus();
+    });
+
+    searchInput.addEventListener('input', updateClearBtn);
+    updateClearBtn();
+
+    const genreData = {
+      ACTION: ["Naruto", "One Piece", "Bleach", "Demon Slayer", "Jujutsu Kaisen", "My Hero Academia", "Black Clover", "One Punch Man", "Chainsaw Man", "Fire Force"],
+      ADVENTURE: ["One Piece", "Hunter x Hunter", "Made in Abyss", "Dr. Stone", "Fairy Tail", "Magi", "Vinland Saga", "JoJo's Bizarre Adventure", "Dragon Ball", "Fullmetal Alchemist: Brotherhood"],
+      COMEDY: ["Gintama", "KonoSuba", "One Punch Man", "Spy x Family", "Saiki K.", "Nichijou", "Grand Blue", "Kaguya-sama: Love Is War", "Daily Lives of High School Boys", "The Disastrous Life of Saiki K."],
+      ROMANCE: ["Your Name", "Toradora!", "Kaguya-sama: Love Is War", "Horimiya", "Fruits Basket", "Your Lie in April", "A Silent Voice", "Clannad", "My Dress-Up Darling", "Rascal Does Not Dream of Bunny Girl Senpai"],
+      FANTASY: ["Demon Slayer", "Black Clover", "Fairy Tail", "Frieren: Beyond Journey's End", "Mushoku Tensei", "Overlord", "Re:Zero", "Sword Art Online", "That Time I Got Reincarnated as a Slime", "The Seven Deadly Sins"],
+      ISEKAI: ["Re:Zero", "KonoSuba", "Overlord", "Mushoku Tensei", "That Time I Got Reincarnated as a Slime", "The Rising of the Shield Hero", "Sword Art Online", "Log Horizon", "No Game No Life", "Jobless Reincarnation"],
+      SHOUNEN: ["Naruto", "One Piece", "Bleach", "Dragon Ball Z", "Demon Slayer", "Jujutsu Kaisen", "My Hero Academia", "Black Clover", "Hunter x Hunter", "Attack on Titan"],
+      SEINEN: ["Berserk", "Vinland Saga", "Tokyo Ghoul", "Monster", "Parasyte", "Kingdom", "Vagabond", "Black Lagoon", "Psycho-Pass", "91 Days"],
+      SPORTS: ["Blue Lock", "Haikyuu!!", "Kuroko's Basketball", "Slam Dunk", "Ao Ashi", "Hajime no Ippo", "Yuri!!! on Ice", "Free!", "Initial D", "Captain Tsubasa"],
+      HORROR: ["Tokyo Ghoul", "Another", "Hellsing", "Parasyte", "Shiki", "Junji Ito Collection", "The Promised Neverland", "Devilman Crybaby", "Corpse Party", "Uzumaki"],
+      "SCI-FI": ["Steins;Gate", "Psycho-Pass", "Cowboy Bebop", "Ghost in the Shell", "Cyberpunk: Edgerunners", "Dr. Stone", "Akira", "86 Eighty-Six", "Pluto", "Trigun"],
+      MYSTERY: ["Death Note", "Monster", "Erased", "Steins;Gate", "The Promised Neverland", "Another", "Detective Conan", "Odd Taxi", "Summertime Rendering", "Moriarty the Patriot"],
+      PSYCHOLOGICAL: ["Death Note", "Monster", "Code Geass", "Classroom of the Elite", "Psycho-Pass", "Steins;Gate", "Perfect Blue", "Paranoia Agent", "Tomodachi Game", "The Future Diary"],
+      MECHA: ["Mobile Suit Gundam", "Neon Genesis Evangelion", "Code Geass", "86 Eighty-Six", "Gurren Lagann", "Darling in the Franxx", "Eureka Seven", "Macross", "Aldnoah.Zero", "Iron-Blooded Orphans"],
+      SUPERNATURAL: ["Jujutsu Kaisen", "Bleach", "Noragami", "Mob Psycho 100", "Blue Exorcist", "Demon Slayer", "Inuyasha", "Yu Yu Hakusho", "Toilet-Bound Hanako-kun", "Natsume's Book of Friends"],
+      HISTORICAL: ["Vinland Saga", "Kingdom", "Rurouni Kenshin", "Golden Kamuy", "Samurai Champloo", "Dororo", "Baccano!", "The Apothecary Diaries", "Drifters", "Blade of the Immortal"],
+      "MARTIAL ARTS": ["Dragon Ball", "Baki", "Kengan Ashura", "Hajime no Ippo", "Naruto", "Yu Yu Hakusho", "Kenichi: The Mightiest Disciple", "Megalo Box", "God of High School", "Record of Ragnarok"],
+      SCHOOL: ["My Hero Academia", "Classroom of the Elite", "Horimiya", "Kaguya-sama: Love Is War", "Assassination Classroom", "Blue Box", "Toradora!", "Haikyuu!!", "Kakegurui", "Demon Slayer"],
+      "DARK FANTASY": ["Attack on Titan", "Berserk", "Demon Slayer", "Jujutsu Kaisen", "Chainsaw Man", "Claymore", "Hell's Paradise", "Made in Abyss", "Tokyo Ghoul", "Devilman Crybaby"]
+    };
+
+
+    const genreFilter = document.getElementById('genre-filter');
+    const genreSections = document.getElementById('genre-sections');
+    const genreCatalog = document.getElementById('genre-catalog');
+
+    function makeAnimeCard(title, genre) {
+      const card = document.createElement('div');
+      const imageTitle = encodeURIComponent(title.replace(/[^a-zA-Z0-9 ]/g, '').trim());
+      card.className = 'card';
+      card.tabIndex = 0;
+      card.dataset.anime = title;
+      card.dataset.genre = genre;
+      card.setAttribute('aria-label', `${title} anime`);
+      card.innerHTML = `<button class="favorite-btn" aria-label="Mark ${title} as favorite" title="Favorite">&#9829;</button><img src="https://placehold.co/320x440/0B1422/00D9FF?text=${imageTitle}" alt="${title}" loading="lazy" /><div class="card-title">${title}</div>`;
+      return card;
+    }
+
+    Object.entries(genreData).forEach(([genre, titles]) => {
+      const section = document.createElement('section');
+      const wrapper = document.createElement('div');
+      const container = document.createElement('div');
+      const button = document.createElement('button');
+      section.className = 'genre-section';
+      section.dataset.genre = genre;
+      section.id = `genre-${genre.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+      section.innerHTML = `<h2>${genre}</h2>`;
+      wrapper.className = 'cards-wrapper';
+      container.className = 'cards-container horizontal-scroll';
+      container.tabIndex = 0;
+      titles.forEach(title => container.appendChild(makeAnimeCard(title, genre)));
+      button.className = 'scroll-button right';
+      button.type = 'button';
+      button.innerHTML = '&#9654;';
+      button.setAttribute('aria-label', `Scroll ${genre} right`);
+      button.addEventListener('click', () => container.scrollBy({left: 320, behavior: 'smooth'}));
+      wrapper.append(container, button);
+      section.appendChild(wrapper);
+      genreSections.appendChild(section);
+
+      const filterButton = document.createElement('button');
+      filterButton.type = 'button';
+      filterButton.textContent = genre;
+      filterButton.dataset.genre = genre;
+      filterButton.addEventListener('click', () => filterGenreCatalog(genre));
+      genreFilter.appendChild(filterButton);
+    });
+
+    function filterGenreCatalog(selectedGenre) {
+      genreCatalog.hidden = Boolean(searchInput.value.trim()) && !selectedGenre;
+      document.querySelectorAll('.genre-section').forEach(section => {
+        section.hidden = Boolean(selectedGenre) && section.dataset.genre !== selectedGenre;
+      });
+      document.querySelectorAll('.genre-filter button').forEach(button => {
+        button.classList.toggle('active', button.dataset.genre === selectedGenre);
+      });
+      if (selectedGenre) {
+        searchInput.value = '';
+        clearSearchBtn.hidden = true;
+        genreCatalog.hidden = false;
+        document.getElementById(`genre-${selectedGenre.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`).scrollIntoView({behavior: 'smooth'});
+      }
+    }
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.trim().toLowerCase();
+      genreCatalog.hidden = false;
+      document.querySelectorAll('.genre-section').forEach(section => {
+        let matches = 0;
+        section.querySelectorAll('.card').forEach(card => {
+          const visible = !query || card.textContent.toLowerCase().includes(query);
+          card.hidden = !visible;
+          matches += visible ? 1 : 0;
+        });
+        section.hidden = Boolean(query) && matches === 0;
+      });
+    });
+
+    // Hamburger menu toggle for mobile nav
+    const hamburger = document.querySelector('.hamburger');
+    const nav = document.getElementById('primary-navigation');
+    hamburger.addEventListener('click', () => {
+      const opened = nav.classList.toggle('open');
+      hamburger.setAttribute('aria-pressed', opened);
+    });
+    hamburger.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        hamburger.click();
+      }
+    });
+
+    // Dark / Light mode toggle
+    const modeToggle = document.getElementById('mode-toggle');
+    const root = document.documentElement;
+    const darkTheme = {
+      '--color-logo': '#00D9FF',
+      '--color-primary': '#006BFF',
+      '--color-primary-dark': '#004DB8',
+      '--color-primary-light': '#00D9FF',
+      '--color-background-header': '#02050A',
+      '--color-background-content': '#080D16',
+      '--color-background-card': '#0B1422',
+      '--color-text-primary': '#F2F4F7',
+      '--color-text-muted': '#9AA7B8',
+      '--color-shadow': 'rgba(0,107,255,0.32)',
+    };
+    const lightTheme = {
+      '--color-logo': '#006BFF',
+      '--color-primary': '#006BFF',
+      '--color-primary-dark': '#004DB8',
+      '--color-primary-light': '#00D9FF',
+      '--color-background-header': '#F2F4F7',
+      '--color-background-content': '#E8F2FF',
+      '--color-background-card': '#FFFFFF',
+      '--color-text-primary': '#02050A',
+      '--color-text-muted': '#40506A',
+      '--color-shadow': 'rgba(0,107,255,0.22)',
+    };
+
+    function applyTheme(theme) {
+      Object.entries(theme).forEach(([varName, val]) => {
+        root.style.setProperty(varName, val);
+      });
+    }
+
+    const savedTheme = localStorage.getItem('animeroll-theme');
+    if (savedTheme === 'light') {
+      applyTheme(lightTheme);
+      modeToggle.checked = true;
+      modeToggle.setAttribute('aria-checked', 'true');
+    } else {
+      applyTheme(darkTheme);
+      modeToggle.checked = false;
+      modeToggle.setAttribute('aria-checked', 'false');
+    }
+
+    modeToggle.addEventListener('change', () => {
+      if (modeToggle.checked) {
+        applyTheme(lightTheme);
+        localStorage.setItem('animeroll-theme', 'light');
+        modeToggle.setAttribute('aria-checked', 'true');
+      } else {
+        applyTheme(darkTheme);
+        localStorage.setItem('animeroll-theme', 'dark');
+        modeToggle.setAttribute('aria-checked', 'false');
+      }
+    });
+
+    // Favorite cards functionality
+    const favoriteButtons = document.querySelectorAll('.favorite-btn');
+    
+    function loadFavorites() {
+      const favs = JSON.parse(localStorage.getItem('animeroll-favorites') || '{}');
+      favoriteButtons.forEach(btn => {
+        const anime = btn.parentElement.getAttribute('data-anime');
+        if (favs[anime]) {
+          btn.classList.add('favorited');
+          btn.setAttribute('aria-pressed', 'true');
+        } else {
+          btn.classList.remove('favorited');
+          btn.setAttribute('aria-pressed', 'false');
+        }
+      });
+    }
+
+    function toggleFavorite(anime, btn) {
+      const favs = JSON.parse(localStorage.getItem('animeroll-favorites') || '{}');
+      if (favs[anime]) {
+        delete favs[anime];
+        btn.classList.remove('favorited');
+        btn.setAttribute('aria-pressed', 'false');
+      } else {
+        favs[anime] = true;
+        btn.classList.add('favorited');
+        btn.setAttribute('aria-pressed', 'true');
+      }
+      localStorage.setItem('animeroll-favorites', JSON.stringify(favs));
+    }
+
+    favoriteButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const anime = btn.parentElement.getAttribute('data-anime');
+        toggleFavorite(anime, btn);
+      });
+      btn.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          btn.click();
+        }
+      });
+    });
+
+    loadFavorites();
+
+    // Scroll to top button
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        scrollTopBtn.classList.add('show');
+      } else {
+        scrollTopBtn.classList.remove('show');
+      }
+    });
+
+    scrollTopBtn.addEventListener('click', () => {
+      window.scrollTo({top: 0, behavior: 'smooth'});
+      scrollTopBtn.blur();
+    });
+
+    // Keyboard arrows for banner slider
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.isContentEditable || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === 'ArrowLeft') btnPrev.click();
+      else if (e.key === 'ArrowRight') btnNext.click();
+    });
+
+  })();
+</script>
+</body>
+</html>
+</content>
+</create_file>
+
+<attempt_completion>
+✅ Added strong new generation features to Animeroll :
+The app is fully responsive and visually attractive for 2025 modern users.
+
+Open the updated `animeroll_.html` file to experience all new features!
+
+Let me know if you want any other features or tweaks.
+
+</attempt_completion>

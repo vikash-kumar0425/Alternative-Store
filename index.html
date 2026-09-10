@@ -1,0 +1,1763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Free Fire Proxy Server</title>
+
+<style>
+:root{
+  --electric-blue:#006BFF;
+  --neon-cyan:#00D9FF;
+  --silver:#F2F4F7;
+  --dark:#02050A;
+  --blue-gradient:linear-gradient(135deg,#006BFF,#00D9FF);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  background:var(--dark);
+  color:var(--silver);
+  overflow-x:hidden;
+}
+
+body:before{
+  content:"";
+  position:fixed;
+  width:450px;
+  height:450px;
+  left:-180px;
+  top:-180px;
+  background:var(--electric-blue);
+  filter:blur(160px);
+  opacity:.12;
+  pointer-events:none;
+}
+
+body:after{
+  content:"";
+  position:fixed;
+  width:450px;
+  height:450px;
+  right:-180px;
+  bottom:-180px;
+  background:var(--neon-cyan);
+  filter:blur(160px);
+  opacity:.10;
+  pointer-events:none;
+}
+
+/* NAVBAR */
+
+nav{
+  position:sticky;
+  top:0;
+  z-index:100;
+  min-height:72px;
+  padding:0 7%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  flex-wrap:wrap;
+  background:rgba(2,5,10,.82);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:20px;
+  font-weight:900;
+}
+
+.logoIcon{
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  overflow:hidden;
+  background:#101722;
+  border:2px solid rgba(0,217,255,.7);
+  box-shadow:0 0 25px rgba(0,107,255,.3);
+}
+
+.logoIcon img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.navLinks{
+  display:flex;
+  gap:28px;
+}
+
+.navActions{
+  display:flex;
+  align-items:center;
+  gap:22px;
+}
+
+.categoryLinks{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  width:100%;
+  padding:0 0 12px;
+  order:3;
+}
+
+.categoryLink{
+  padding:8px 14px;
+  border:1px solid #273247;
+  border-radius:9px;
+  color:#c7cfdd;
+  background:#111827;
+  font-size:12px;
+  font-weight:800;
+  text-decoration:none;
+  transition:.25s;
+}
+
+.categoryLink:hover{
+  color:#fff;
+  border-color:var(--neon-cyan);
+  background:rgba(0,217,255,.12);
+}
+
+.navLinks a{
+  color:#9da6b7;
+  text-decoration:none;
+  font-size:14px;
+  transition:.25s;
+}
+
+.navLinks a:hover{
+  color:#fff;
+}
+
+.menuToggle{
+  width:42px;
+  height:42px;
+  display:grid;
+  place-content:center;
+  gap:5px;
+  border:1px solid #273247;
+  border-radius:10px;
+  background:#111827;
+  cursor:pointer;
+}
+
+.menuToggle span{
+  display:block;
+  width:20px;
+  height:2px;
+  border-radius:2px;
+  background:#fff;
+}
+
+.quickMenu{
+  position:absolute;
+  top:64px;
+  right:7%;
+  width:245px;
+  display:none;
+  padding:16px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:16px;
+  background:#0d1421;
+  box-shadow:0 20px 55px rgba(0,0,0,.45);
+}
+
+.quickMenu.open{
+  display:block;
+  animation:quickMenuSlide .22s ease-out;
+}
+
+@keyframes quickMenuSlide{
+  from{
+    opacity:0;
+    transform:translateY(-10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.quickMenuTitle{
+  color:#8993a6;
+  font-size:12px;
+  margin-bottom:12px;
+}
+
+.quickMenuVersion{
+  display:block;
+  margin-bottom:12px;
+  color:#fff;
+  font-size:18px;
+}
+
+.quickMenu .btn{
+  width:100%;
+  margin-top:8px;
+  padding:12px 16px;
+}
+
+.quickMenu .btn + .btn{
+  margin-top:14px;
+}
+
+/* HERO */
+
+.hero{
+  min-height:700px;
+  padding:80px 7%;
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:60px;
+  align-items:center;
+}
+
+.badge{
+  display:inline-block;
+  padding:8px 14px;
+  border-radius:50px;
+  border:1px solid rgba(255,110,30,.25);
+  background:rgba(0,107,255,.12);
+  color:var(--neon-cyan);
+  font-size:13px;
+  margin-bottom:22px;
+}
+
+h1{
+  font-size:clamp(48px,7vw,82px);
+  line-height:.95;
+  letter-spacing:-4px;
+  margin-bottom:25px;
+}
+
+h1 span{
+  color:var(--neon-cyan);
+}
+
+.heroText{
+  max-width:650px;
+  color:#9ca5b6;
+  font-size:18px;
+  line-height:1.7;
+  margin-bottom:30px;
+}
+
+.headingSearch{
+  position:relative;
+  display:flex;
+  align-items:center;
+  width:min(100%,470px);
+  margin:0 0 24px;
+  padding:2px;
+  overflow:hidden;
+  border-radius:15px;
+  background:linear-gradient(110deg,var(--electric-blue),var(--neon-cyan),var(--electric-blue));
+  background-size:220% 100%;
+  animation:searchGlow 4s linear infinite;
+  box-shadow:0 12px 35px rgba(0,107,255,.2);
+}
+
+.categoryLinks .headingSearch{
+  flex:0 0 min(320px,42vw);
+  width:auto;
+  margin:0 0 0 auto;
+}
+
+.headingSearch::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
+  transform:translateX(-100%);
+  animation:searchSweep 3.2s ease-in-out infinite;
+}
+
+.headingSearchIcon{
+  position:relative;
+  z-index:1;
+  width:46px;
+  display:grid;
+  place-items:center;
+  color:var(--neon-cyan);
+  font-size:21px;
+}
+
+.headingSearch input{
+  position:relative;
+  z-index:1;
+  width:100%;
+  min-height:48px;
+  border:0;
+  outline:0;
+  border-radius:13px;
+  color:var(--silver);
+  background:#080d16;
+  font:inherit;
+}
+
+.headingSearch input::placeholder{
+  color:#74839a;
+}
+
+.headingSearch:focus-within{
+  box-shadow:0 0 0 3px rgba(0,217,255,.18),0 15px 45px rgba(0,107,255,.3);
+}
+
+@keyframes searchGlow{
+  0%{background-position:0% 50%;}
+  100%{background-position:220% 50%;}
+}
+
+@keyframes searchSweep{
+  0%,35%{transform:translateX(-100%);}
+  70%,100%{transform:translateX(100%);}
+}
+
+.buttons{
+  display:flex;
+  gap:14px;
+  row-gap:18px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  padding:15px 25px;
+  border-radius:12px;
+  text-decoration:none;
+  font-weight:800;
+  cursor:pointer;
+  border:0;
+  transition:.25s;
+}
+
+.primary{
+  color:var(--silver);
+  background:var(--blue-gradient);
+  box-shadow:0 15px 40px rgba(0,107,255,.25);
+}
+
+.primary:hover{
+  transform:translateY(-3px);
+  box-shadow:0 20px 50px rgba(0,217,255,.35);
+}
+
+.secondary{
+  color:#fff;
+  background:#111827;
+  border:1px solid #273247;
+}
+
+.secondary:hover{
+  background:#182236;
+}
+
+/* GAME CARD */
+
+.gameCard{
+  min-height:430px;
+  padding:30px;
+  border-radius:30px;
+  background:
+    linear-gradient(145deg,rgba(0,107,255,.17),rgba(2,5,10,.95)),
+    #080d16;
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 35px 100px rgba(0,0,0,.4);
+  position:relative;
+  overflow:hidden;
+}
+
+.cardTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.status{
+  color:var(--neon-cyan);
+  background:rgba(0,217,255,.08);
+  border:1px solid rgba(0,217,255,.16);
+  padding:7px 12px;
+  border-radius:50px;
+  font-size:12px;
+}
+
+.gameLogo{
+  width:95px;
+  height:95px;
+  margin:65px auto 28px;
+  border-radius:25px;
+  overflow:hidden;
+  background:#101722;
+  border:3px solid rgba(0,217,255,.7);
+  box-shadow:0 20px 60px rgba(0,107,255,.3);
+  transform:rotate(-4deg);
+}
+
+.gameLogo img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transform:rotate(4deg) scale(1.08);
+}
+
+.capcutLogo{
+  width:78px;
+  height:78px;
+  display:grid;
+  place-items:center;
+  margin:0 auto 22px;
+  border-radius:20px;
+  color:#050505;
+  background:linear-gradient(135deg,#fff,#b9b9b9);
+  box-shadow:0 16px 40px rgba(255,255,255,.16);
+  font-size:20px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+
+.gameCard h2{
+  text-align:center;
+  font-size:28px;
+  margin-bottom:8px;
+}
+
+.appGrid{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
+
+.appGrid .downloadBox{
+  max-width:none;
+  margin:0;
+  padding:18px 14px;
+  border-radius:18px;
+}
+
+.appGrid .capcutLogo{
+  width:58px;
+  height:58px;
+  margin-bottom:14px;
+  border-radius:16px;
+  font-size:16px;
+}
+
+.appGrid .version{
+  font-size:10px;
+  margin-bottom:8px;
+}
+
+.appGrid .downloadBox h2{
+  font-size:20px;
+  margin-bottom:8px;
+}
+
+.appGrid .downloadBox p{
+  font-size:12px;
+  line-height:1.45;
+  margin-bottom:14px;
+}
+
+.appGrid .downloadActions .btn{
+  width:100%;
+  padding:10px 8px;
+  font-size:12px;
+}
+
+.extraSections{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+
+.extraSection.categoryHeader{
+  grid-column:1/-1;
+  padding:12px 0 0;
+  border:0;
+  background:none;
+  box-shadow:none;
+}
+
+.extraSection.categoryHeader:hover{
+  transform:none;
+  border-color:transparent;
+  box-shadow:none;
+}
+
+.categoryHeader h3{
+  margin:0;
+  color:var(--neon-cyan);
+  font-size:25px;
+}
+
+.categoryHeader p{
+  min-height:0;
+  margin:6px 0 0;
+}
+
+.extraSection{
+  min-width:0;
+  padding:18px 14px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;
+  background:linear-gradient(145deg,#121b2b,#080d16);
+  box-shadow:0 18px 45px rgba(0,0,0,.2);
+  transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+.extraSection:hover{
+  transform:translateY(-5px);
+  border-color:rgba(0,217,255,.35);
+  box-shadow:0 22px 55px rgba(0,107,255,.22);
+}
+
+.extraSectionIndex{
+  color:var(--neon-cyan);
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.08em;
+}
+
+.extraSection h3{
+  margin:8px 0;
+  font-size:18px;
+}
+
+.extraSection p{
+  min-height:38px;
+  margin:0 0 14px;
+  color:#8993a5;
+  font-size:12px;
+  line-height:1.5;
+}
+
+.extraSection .btn{
+  width:100%;
+  padding:10px 8px;
+  font-size:12px;
+}
+
+.capcutVersions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.capcutVersions .btn{
+  min-width:0;
+  padding:10px 6px;
+  font-size:11px;
+}
+
+.gameCard p{
+  text-align:center;
+  color:#8993a6;
+  font-size:14px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:25px;
+}
+
+.stat{
+  text-align:center;
+  padding:15px 8px;
+  border-radius:14px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.06);
+}
+
+.stat strong{
+  display:block;
+  font-size:16px;
+}
+
+.stat small{
+  color:#788398;
+  font-size:11px;
+}
+
+/* SECTIONS */
+
+section{
+  padding:90px 7%;
+}
+
+.sectionTitle{
+  text-align:center;
+  margin-bottom:45px;
+}
+
+.sectionTitle h2{
+  font-size:42px;
+  margin-bottom:12px;
+}
+
+.sectionTitle p{
+  color:#858fa2;
+}
+
+/* FEATURES */
+
+.features{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
+
+.feature{
+  padding:30px;
+  border-radius:22px;
+  background:#0d1421;
+  border:1px solid rgba(255,255,255,.07);
+  transition:.3s;
+}
+
+.feature:hover{
+  transform:translateY(-7px);
+  border-color:rgba(0,217,255,.35);
+}
+
+.featureIcon{
+  width:52px;
+  height:52px;
+  display:grid;
+  place-items:center;
+  border-radius:15px;
+  background:rgba(0,107,255,.14);
+  font-size:23px;
+  margin-bottom:20px;
+}
+
+.feature h3{
+  margin-bottom:10px;
+}
+
+.feature p{
+  color:#828da0;
+  font-size:14px;
+  line-height:1.6;
+}
+
+/* DOWNLOAD */
+
+.downloadBox{
+  max-width:760px;
+  margin:auto;
+  padding:34px 26px;
+  text-align:center;
+  border-radius:24px;
+  background:linear-gradient(145deg,#121b2b,#0b101a);
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 30px 90px rgba(0,0,0,.3);
+}
+
+.downloadBox + .downloadBox{
+  margin-top:20px;
+}
+
+.version{
+  color:var(--neon-cyan);
+  font-weight:800;
+  margin-bottom:12px;
+  font-size:13px;
+}
+
+.downloadBox h2{
+  font-size:32px;
+  margin-bottom:10px;
+}
+
+.downloadBox p{
+  max-width:650px;
+  margin:0 auto 18px;
+  color:#8993a5;
+  line-height:1.7;
+}
+
+.downloadInfo{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:28px;
+}
+
+.downloadActions{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:16px;
+}
+
+.downloadActions .btn{
+  width:min(100%,260px);
+  padding:12px 18px;
+}
+
+.info{
+  padding:10px 15px;
+  border-radius:10px;
+  background:#080d16;
+  border:1px solid #202a3b;
+  color:#9ba5b7;
+  font-size:13px;
+}
+
+/* DOWNLOAD PROGRESS */
+
+.progressBox{
+  display:none;
+  max-width:500px;
+  margin:25px auto 0;
+}
+
+.progressText{
+  display:flex;
+  justify-content:space-between;
+  color:#aab3c3;
+  font-size:13px;
+  margin-bottom:8px;
+}
+
+.progressBar{
+  height:8px;
+  background:#1a2332;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.progress{
+  width:0%;
+  height:100%;
+  background:linear-gradient(90deg,#006BFF,#00D9FF);
+  transition:.2s;
+}
+
+/* FAQ */
+
+.faq{
+  max-width:850px;
+  margin:auto;
+}
+
+details{
+  padding:20px;
+  margin-bottom:12px;
+  border-radius:15px;
+  background:#0d1421;
+  border:1px solid rgba(255,255,255,.07);
+}
+
+summary{
+  cursor:pointer;
+  font-weight:800;
+}
+
+details p{
+  padding-top:15px;
+  color:#8993a5;
+  line-height:1.6;
+  font-size:14px;
+}
+
+/* FOOTER */
+
+footer{
+  padding:40px 7%;
+  text-align:center;
+  color:#697386;
+  font-size:13px;
+  border-top:1px solid rgba(255,255,255,.07);
+}
+
+/* TOAST */
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:25px;
+  transform:translate(-50%,130px);
+  padding:14px 20px;
+  border-radius:12px;
+  background:#121b2a;
+  border:1px solid #29364c;
+  color:white;
+  box-shadow:0 15px 40px rgba(0,0,0,.4);
+  transition:.35s;
+  z-index:999;
+}
+
+.toast.show{
+  transform:translate(-50%,0);
+}
+
+/* MOBILE */
+
+@media(max-width:850px){
+
+  nav{
+    padding:0 5%;
+  }
+
+  .categoryLinks{
+    gap:6px;
+    overflow-x:auto;
+    flex-wrap:nowrap;
+  }
+
+  .categoryLink{
+    flex:0 0 auto;
+  }
+
+  .navLinks{
+    display:none;
+  }
+
+  .navActions{
+    gap:0;
+  }
+
+  .hero{
+    grid-template-columns:1fr;
+    padding:65px 5%;
+  }
+
+  h1{
+    letter-spacing:-2px;
+  }
+
+  section{
+    padding:65px 5%;
+  }
+
+  .features{
+    grid-template-columns:1fr;
+  }
+
+  .extraSections{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+  }
+
+  .downloadBox{
+    padding:28px 18px;
+  }
+
+  .downloadBox h2{
+    font-size:27px;
+  }
+}
+
+@media(max-width:500px){
+
+  .headingSearch{
+    width:100%;
+  }
+
+  .categoryLinks .headingSearch{
+    flex-basis:230px;
+    width:230px;
+  }
+
+  .appGrid{
+    gap:8px;
+  }
+
+  .appGrid .downloadBox{
+    padding:14px 8px;
+  }
+
+  .appGrid .downloadBox h2{
+    font-size:15px;
+  }
+
+  .appGrid .downloadBox p{
+    font-size:10px;
+  }
+
+  .appGrid .downloadActions .btn{
+    min-height:40px;
+    padding:8px 4px;
+    font-size:10px;
+  }
+
+  .extraSection{
+    padding:14px 10px;
+  }
+
+  .extraSection h3{
+    font-size:14px;
+  }
+
+  .extraSection p{
+    font-size:10px;
+  }
+
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+  .buttons .btn{
+    width:100%;
+  }
+
+  .buttons{
+    row-gap:18px;
+  }
+
+  .quickMenu .btn + .btn{
+    margin-top:16px;
+  }
+
+  .gameCard{
+    min-height:390px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav>
+
+  <div class="logo">
+    <div class="logoIcon">
+      <img src="ALTlogo.png" alt="Free Fire Logo">
+    </div>
+      Alternative Pro
+  </div>
+
+  <div class="navActions">
+    <div class="navLinks">
+      <a href="#home">Home</a>
+      <a href="#features">Features</a>
+      <a href="#download">Download</a>
+      <a href="#faq">FAQ</a>
+    </div>
+
+    <button type="button" class="menuToggle" id="menuToggle" aria-label="Open Free Fire menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <div class="categoryLinks" aria-label="Content categories">
+    <a class="categoryLink" href="anime_web\animeroll.html" data-category="Anime">Anime</a>
+    <a class="categoryLink" href="#extra-downloads" data-category="Software" data-filter="SOFTWARE">Software</a>
+    <a class="categoryLink" href="#home" data-category="Apps">Apps</a>
+    <a class="categoryLink" href="#extra-downloads" data-category="Movie" data-filter="MOVIE / STREAMING APPS">Movie</a>
+    <a class="categoryLink" href="#extra-downloads" data-category="Games" data-filter="GAMES">Games</a>
+    <a class="categoryLink" href="#extra-downloads" data-category="VPN" data-filter="VPN">VPN</a>
+    <a class="categoryLink" href="#extra-downloads" data-category="Editing" data-filter="EDITING APPS">Editing</a>
+    <a class="categoryLink" href="#home" data-category="Hacking">Hacking</a>
+    <a class="categoryLink" href="#home" data-category="News">News</a>
+    <a class="categoryLink" href="bilibili-download.html" target="_blank" rel="noopener noreferrer">BiliBili</a>
+    <label class="headingSearch" for="appSearch">
+      <span class="headingSearchIcon" aria-hidden="true">⌕</span>
+      <input id="appSearch" type="search" placeholder="Search apps..." autocomplete="off">
+    </label>
+  </div>
+
+  <div class="quickMenu" id="quickMenu">
+    <div class="quickMenuTitle">CATEGORIES</div>
+    <a class="btn secondary categoryMenuLink" href="anime_web/animeroll.html" data-category="Anime">Anime</a>
+    <a class="btn secondary categoryMenuLink" href="#extra-downloads" data-category="Software" data-filter="SOFTWARE">Software</a>
+    <a class="btn secondary categoryMenuLink" href="#extra-downloads" data-category="Apps">Apps</a>
+    <a class="btn secondary categoryMenuLink" href="#extra-downloads" data-category="Movie" data-filter="MOVIE / STREAMING APPS">Movie</a>
+    <a class="btn secondary categoryMenuLink" href="#extra-downloads" data-category="Games" data-filter="GAMES">Games</a>
+    <a class="btn secondary categoryMenuLink" href="#extra-downloads" data-category="VPN" data-filter="VPN">VPN</a>
+    <a class="btn secondary categoryMenuLink" href="#extra-downloads" data-category="Editing" data-filter="EDITING APPS">Editing</a>
+    <a class="btn secondary categoryMenuLink" href="#extra-downloads" data-category="Hacking">Hacking</a>
+    <a class="btn secondary categoryMenuLink" href="#extra-downloads" data-category="News">News</a>
+    <a class="btn secondary" href="bilibili-download.html" target="_blank" rel="noopener noreferrer">Bili Bili</a>
+    <div class="quickMenuTitle">FREE FIRE VERSION</div>
+    <strong class="quickMenuVersion">OB53</strong>
+    <a class="btn primary" href="#download">
+      ⬇ Download OB53
+    </a>
+    <a class="btn secondary" href="FreeFire-proxy-Old-Version.apk" download="FreeFire-proxy-Old-Version.apk">
+      Download Old Version
+    </a>
+    <a class="btn primary" href="https://www.UnlockFFBeta.com" target="_blank" rel="noopener noreferrer">
+      Activate Proxy
+    </a>
+  </div>
+
+</nav>
+
+
+<!-- HERO -->
+
+<main id="home">
+
+<section class="hero">
+
+  <div>
+
+    <div class="badge">
+      ⚡ Welcome
+    </div>
+
+    <h1>
+      Free Fire<br>
+      <span>Proxy Server</span>
+    </h1>
+
+    <p class="heroText">
+      A modern gaming portal for Free Fire version information
+      and authorized downloads. Fast, clean and optimized for
+      mobile users.
+    </p>
+
+    <div class="buttons">
+
+      <a href="#download" class="btn primary">
+        ⬇ Download Now
+      </a>
+
+      <a href="#features" class="btn secondary">
+        Explore Features
+      </a>
+
+      <a
+        href="https://www.UnlockFFBeta.com"
+        class="btn primary"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Activate Proxy
+      </a>
+
+    </div>
+
+  </div>
+
+
+  <div class="gameCard">
+
+    <div class="cardTop">
+
+      <strong>GAME PACKAGE</strong>
+
+      <div class="status">
+        ● Available
+      </div>
+
+    </div>
+
+    <div class="gameLogo">
+      <img src="freefire-logo.jfif" alt="Free Fire Logo">
+    </div>
+
+    <h2>Free Fire Proxy</h2>
+
+    <p>
+      Authorized Download Portal
+    </p>
+
+    <div class="stats">
+
+      <div class="stat">
+        <strong>OB53</strong>
+        <small>Version</small>
+      </div>
+
+      <div class="stat">
+        <strong>Android</strong>
+        <small>Platform</small>
+      </div>
+
+      <div class="stat">
+        <strong>Secure</strong>
+        <small>Source</small>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="appGrid">
+
+  <div class="downloadBox capcutBox">
+
+    <div class="capcutLogo" aria-label="CapCut logo">
+      CC
+    </div>
+
+    <div class="version">
+      CREATIVE EDITING TOOLS
+    </div>
+
+    <h2>
+      CapCut Pro Premium
+    </h2>
+
+    <p>
+      Explore official CapCut Pro features and premium editing tools.
+    </p>
+
+    <div class="downloadActions capcutVersions">
+      <a
+        class="btn primary"
+        href="capcut-download.html"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Mobile Version
+      </a>
+      <a
+        class="btn primary"
+        href="capcutpro.html"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        PC Version
+      </a>
+    </div>
+
+  </div>
+
+  <div class="downloadBox capcutBox">
+
+    <div class="capcutLogo" aria-label="BiliBili logo">
+      BB
+    </div>
+
+    <div class="version">
+      VIDEO DOWNLOAD TOOL
+    </div>
+
+    <h2>
+      Bili Bili Download
+    </h2>
+
+    <p>
+      Save BiliBili video links for convenient viewing and downloading.
+    </p>
+
+    <div class="downloadActions">
+      <a
+        class="btn primary"
+          href="bilibili-download.html"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+         Bili Bili Download
+      </a>
+    </div>
+
+  </div>
+
+  <div class="downloadBox capcutBox">
+
+    <div class="capcutLogo" aria-label="Free Fire Proxy logo">
+      FF
+    </div>
+
+    <div class="version">
+      GAME PROXY DOWNLOAD
+    </div>
+
+    <h2>
+      Free Fire Proxy
+    </h2>
+
+    <p>
+      Download the Free Fire Proxy package for Android.
+    </p>
+
+    <div class="downloadActions">
+      <a
+        class="btn primary"
+          href="freefire-download.html"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Free Fire Download
+      </a>
+    </div>
+
+  </div>
+
+  <div class="downloadBox capcutBox">
+
+    <div class="capcutLogo" aria-label="Urban VPN logo">
+      UV
+    </div>
+
+    <div class="version">
+      SECURE VPN ACCESS
+    </div>
+
+    <h2>
+      Urban VPN Download
+    </h2>
+
+    <p>
+      Download Urban VPN from the official website for secure browsing.
+    </p>
+
+    <div class="downloadActions">
+      <a
+        class="btn primary"
+          href="urbanvpn-download.html"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Download Urban VPN
+      </a>
+    </div>
+
+  </div>
+
+  <div class="downloadBox capcutBox">
+
+    <div class="capcutLogo" aria-label="MovieBox logo">
+      MB
+    </div>
+
+    <div class="version">
+      MOVIE STREAMING APP
+    </div>
+
+    <h2>
+      MovieBox Download
+    </h2>
+
+    <p>
+      Generate an authorized MovieBox source link for access.
+    </p>
+
+    <div class="downloadActions">
+      <a
+        class="btn primary"
+        href="moviebox-download.html"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Download MovieBox
+      </a>
+    </div>
+
+  </div>
+
+  
+
+  <div class="downloadBox capcutBox">
+
+    <div class="capcutLogo" aria-label="Activation Key logo">
+      AK
+    </div>
+
+    <div class="version">
+      ACTIVATION KEY DOWNLOAD
+    </div>
+
+    <h2>
+      Activation Key
+    </h2>
+
+    <p>
+      Generate an authorized activation key source link.
+    </p>
+
+    <div class="downloadActions">
+      <a
+        class="btn primary"
+        href="activation-key-download.html"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Activation Key
+      </a>
+    </div>
+
+  </div>
+
+  </div>
+
+</section>
+
+
+<section id="extra-downloads" aria-label="More download sections">
+
+  <div class="sectionTitle">
+    <h2>All App Downloads</h2>
+    <p>Browse 250 apps across editing, streaming, games, VPN and software categories.</p>
+  </div>
+
+  <div class="extraSections" id="extraSections"></div>
+
+</section>
+
+
+<!-- FEATURES -->
+
+<section id="features">
+
+  <div class="sectionTitle">
+
+    <h2>Why Use Our Portal?</h2>
+
+    <p>
+      Simple, fast and mobile-friendly experience.
+    </p>
+
+  </div>
+
+
+  <div class="features">
+
+    <div class="feature">
+
+      <div class="featureIcon">⚡</div>
+
+      <h3>Fast Access</h3>
+
+      <p>
+        Quickly reach your authorized download source
+        without unnecessary steps.
+      </p>
+
+    </div>
+
+
+    <div class="feature">
+
+      <div class="featureIcon">📱</div>
+
+      <h3>Mobile Friendly</h3>
+
+      <p>
+        Responsive interface designed for Android phones,
+        tablets and desktop browsers.
+      </p>
+
+    </div>
+
+
+    <div class="feature">
+
+      <div class="featureIcon">🔒</div>
+
+      <h3>Trusted Source</h3>
+
+      <p>
+        Always use official or authorized sources when
+        downloading game files.
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- DOWNLOAD -->
+
+<section id="download">
+
+  <div class="downloadBox">
+
+    <div class="version">
+      LATEST LISTED VERSION • OB53
+    </div>
+
+    <h2>
+      Download Free Fire Proxy
+    </h2>
+
+    <p>
+      Click the button below to download your authorized
+      game package.
+    </p>
+
+
+    <div class="downloadInfo">
+
+      <div class="info">📱 Android</div>
+      <div class="info">🎮 Free Fire</div>
+      <div class="info">📦 OB53</div>
+      <div class="info">⚡ Fast Download</div>
+
+    </div>
+
+
+    <!--
+      IMPORTANT:
+
+      Put your authorized APK here:
+
+      files/FreeFire-OB53.apk
+
+      Folder structure:
+
+      index.html
+      files/
+        FreeFire-OB53.apk
+    -->
+
+    <div class="downloadActions">
+      <a
+        id="downloadButton"
+        class="btn primary"
+        href="freefire-download.html"
+      >
+        ⬇ Free Fire Proxy
+      </a>
+
+      <a class="btn primary" href="https://www.UnlockFFBeta.com" target="_blank" rel="noopener noreferrer">
+        Activate Proxy
+      </a>
+
+      <a class="btn primary" href="urbanvpn-download.html" target="_blank" rel="noopener noreferrer">
+        Download Urban VPN
+      </a>
+    </div>
+
+
+    <div class="progressBox" id="progressBox">
+
+      <div class="progressText">
+        <span>Preparing download...</span>
+        <span id="progressPercent">0%</span>
+      </div>
+
+      <div class="progressBar">
+        <div class="progress" id="progress"></div>
+      </div>
+
+    </div>
+
+
+    <p style="font-size:12px;margin-top:18px;">
+      Download speed depends on your hosting server and internet connection.
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- FAQ -->
+
+<section id="faq">
+
+  <div class="sectionTitle">
+
+    <h2>Frequently Asked Questions</h2>
+
+    <p>
+      Everything you need to know.
+    </p>
+
+  </div>
+
+
+  <div class="faq">
+
+    <details>
+
+      <summary>
+        What is this website?
+      </summary>
+
+      <p>
+        This is a modern gaming download portal interface
+        for displaying version information and providing
+        access to an authorized download source.
+      </p>
+
+    </details>
+
+
+    <details>
+
+      <summary>
+        Which version is listed?
+      </summary>
+
+      <p>
+        This template currently displays OB53.
+        Update the version information whenever your
+        authorized source changes.
+      </p>
+
+    </details>
+
+
+    <details>
+
+      <summary>
+        How does the Download button work?
+      </summary>
+
+      <p>
+        The button points directly to the APK file located
+        inside the files folder. Your hosting server must
+        contain the authorized file at that exact path.
+      </p>
+
+    </details>
+
+
+    <details>
+
+      <summary>
+        Does it work on Android?
+      </summary>
+
+      <p>
+        Yes. The website is responsive and optimized
+        for Android, tablet and desktop browsers.
+      </p>
+
+    </details>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+  © 2026 FF Proxy Server
+  <br><br>
+  Gaming Download Portal
+
+</footer>
+
+
+<!-- TOAST -->
+
+<div class="toast" id="toast">
+  Download starting...
+</div>
+
+
+<script>
+
+const downloadButton =
+  document.getElementById("downloadButton");
+
+const menuToggle =
+  document.getElementById("menuToggle");
+
+const quickMenu =
+  document.getElementById("quickMenu");
+
+const toast =
+  document.getElementById("toast");
+
+const progressBox =
+  document.getElementById("progressBox");
+
+const progress =
+  document.getElementById("progress");
+
+const progressPercent =
+  document.getElementById("progressPercent");
+
+
+downloadButton.addEventListener("click", function(){
+
+  toast.classList.add("show");
+
+  progressBox.style.display = "block";
+
+  let value = 0;
+
+  const timer = setInterval(function(){
+
+    value += Math.floor(Math.random() * 12) + 5;
+
+    if(value >= 100){
+
+      value = 100;
+
+      clearInterval(timer);
+
+      setTimeout(function(){
+        progressBox.style.display = "none";
+      },800);
+    }
+
+    progress.style.width = value + "%";
+
+    progressPercent.textContent =
+      value + "%";
+
+  },120);
+
+  setTimeout(function(){
+
+    toast.classList.remove("show");
+
+  },2500);
+
+});
+
+menuToggle.addEventListener("click", function(){
+  const isOpen = quickMenu.classList.toggle("open");
+  menuToggle.setAttribute("aria-expanded", isOpen);
+});
+
+document.addEventListener("click", function(event){
+  if(!quickMenu.contains(event.target) && !menuToggle.contains(event.target)){
+    quickMenu.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded", "false");
+  }
+});
+
+const appSearch = document.getElementById("appSearch");
+const appGridCards = Array.from(document.querySelectorAll(".appGrid > .downloadBox"));
+
+const downloadCategories = [
+  {
+    name: "EDITING APPS",
+    apps: "CapCut|VN Video Editor|KineMaster|Alight Motion|InShot|PowerDirector|Filmora|Adobe Premiere Rush|Adobe Premiere Pro|Adobe After Effects|DaVinci Resolve|Final Cut Pro|LumaFusion|YouCut|VivaVideo|VideoShow|Splice|Mojo|Canva|Picsart|Snapseed|Lightroom|Photoshop|Photoshop Express|Pixlr|Fotor|PhotoDirector|Remini|Motion Ninja|Node Video|Funimate|PowerDirector Mobile|GoPro Quik|Magisto|FilmoraGo|VivaCut|Videoleap|InVideo|Descript|Clipchamp|OpenShot|Shotcut|Kdenlive|HitFilm|Lightworks|Avid Media Composer|Blender|Affinity Photo|CorelDRAW|Paint.NET".split("|")
+  },
+  {
+    name: "MOVIE / STREAMING APPS",
+    apps: "Netflix|Amazon Prime Video|Disney+|JioHotstar|YouTube|YouTube Movies|Apple TV|Hulu|Max|Paramount+|Peacock|Crunchyroll|Tubi|Pluto TV|Plex|MUBI|MX Player|ZEE5|Sony LIV|Sun NXT|Aha|Hoichoi|Lionsgate Play|Discovery+|Voot|ALTBalaji|Eros Now|ShemarooMe|ManoramaMAX|Chaupal|aha Tamil|aha Telugu|JioCinema|DistroTV|Rakuten TV|Kanopy|BritBox|Acorn TV|Shudder|AMC+|Crunchyroll Manga|FilmRise|Freevee|YouTube TV|Sling TV|Fandango at Home|Google TV|Apple TV+|Viki|WeTV".split("|")
+  },
+  {
+    name: "GAMES",
+    apps: "Grand Theft Auto V|Grand Theft Auto VI|Minecraft|Roblox|Fortnite|PUBG: Battlegrounds|PUBG Mobile|Free Fire|Call of Duty: Mobile|Call of Duty: Warzone|Valorant|Counter-Strike 2|Apex Legends|Rocket League|EA Sports FC 26|Forza Horizon 5|Need for Speed Heat|Need for Speed Unbound|Red Dead Redemption 2|Cyberpunk 2077|Elden Ring|God of War|Spider-Man Remastered|Spider-Man 2|The Witcher 3|Assassin's Creed Valhalla|Assassin's Creed Mirage|Far Cry 6|Watch Dogs 2|Hitman|Terraria|Among Us|Fall Guys|Brawlhalla|FIFA 23|eFootball|Asphalt 9|Asphalt Legends Unite|Real Racing 3|CarX Street|BeamNG.drive|Euro Truck Simulator 2|American Truck Simulator|GTA: San Andreas|GTA: Vice City|GTA: Liberty City Stories|Mortal Kombat 11|Tekken 8|Street Fighter 6|Hogwarts Legacy".split("|")
+  },
+  {
+    name: "VPN",
+    apps: "NordVPN|ExpressVPN|Surfshark|Proton VPN|CyberGhost VPN|Private Internet Access|Windscribe|TunnelBear|hide.me|IPVanish|PureVPN|Mullvad VPN|VyprVPN|Hotspot Shield|Psiphon|Speedify|PrivadoVPN|Atlas VPN|Norton VPN|Avast SecureLine VPN|AVG Secure VPN|Bitdefender VPN|McAfee VPN|AdGuard VPN|Mozilla VPN|TorGuard|AirVPN|IVPN|HideMyAss VPN|StrongVPN|FastestVPN|PureVPN|ZoogVPN|Hola VPN|Betternet|VPN Unlimited|Urban VPN|Browsec VPN|Thunder VPN|Turbo VPN|SuperVPN|VPN Proxy Master|1.1.1.1|Orbot|RiseupVPN|OpenVPN|WireGuard|Mullvad Browser|Opera VPN|Lantern".split("|")
+  },
+  {
+    name: "SOFTWARE",
+    apps: "Microsoft Windows|Microsoft Word|Microsoft Excel|Microsoft PowerPoint|Microsoft Access|Microsoft Outlook|Google Chrome|Mozilla Firefox|Microsoft Edge|Opera|VLC Media Player|7-Zip|WinRAR|Adobe Acrobat|Adobe Photoshop|Adobe Illustrator|Adobe Premiere Pro|Adobe After Effects|Visual Studio Code|Visual Studio|Android Studio|IntelliJ IDEA|PyCharm|Eclipse|Git|GitHub Desktop|Docker Desktop|Postman|Node.js|Python|Java|MySQL|PostgreSQL|MongoDB|Blender|OBS Studio|Audacity|DaVinci Resolve|Figma|Canva|Notepad++|LibreOffice|Ubuntu|Debian|Fedora|Kali Linux|VirtualBox|VMware Workstation|CCleaner|CrystalDiskInfo".split("|")
+  }
+];
+
+const downloadSections = downloadCategories.flatMap(function(category){
+  return category.apps.map(function(name){
+    return {name:name, category:category.name};
+  });
+});
+
+const extraSections = document.getElementById("extraSections");
+
+let sectionNumber = 6;
+downloadCategories.forEach(function(category){
+  const heading = document.createElement("article");
+  heading.className = "extraSection categoryHeader";
+  heading.dataset.category = category.name;
+  heading.innerHTML = `<h3>${category.name}</h3><p>Official download sources for ${category.apps.length} apps.</p>`;
+  extraSections.appendChild(heading);
+
+  category.apps.forEach(function(appName){
+    const card = document.createElement("article");
+    const encodedName = encodeURIComponent(appName + " official download");
+    card.className = "extraSection appDownloadCard";
+    card.dataset.category = category.name;
+    card.dataset.appName = appName.toLowerCase();
+    card.id = "download-section-" + String(sectionNumber).padStart(3, "0");
+    card.innerHTML = `
+      <div class="extraSectionIndex">${category.name} · ${String(sectionNumber - 5).padStart(2, "0")}</div>
+      <h3>${appName}</h3>
+      <p>Find the official ${appName} download source.</p>
+      <a class="btn primary" href="https://www.google.com/search?q=${encodedName}" target="_blank" rel="noopener noreferrer">Official Source</a>
+    `;
+    extraSections.appendChild(card);
+    sectionNumber++;
+  });
+});
+
+let activeCategory = "";
+
+function applyAppFilters(){
+  const searchTerm = appSearch.value.trim().toLowerCase();
+  let visibleCards = 0;
+
+  const allCards = appGridCards.concat(Array.from(document.querySelectorAll(".appDownloadCard")));
+  allCards.forEach(function(card){
+    const categoryMatches = !activeCategory || card.dataset.category === activeCategory;
+    const searchMatches = card.textContent.toLowerCase().includes(searchTerm);
+    const matches = categoryMatches && searchMatches;
+    card.style.display = matches ? "" : "none";
+    visibleCards += matches ? 1 : 0;
+  });
+
+  document.querySelectorAll(".categoryHeader").forEach(function(heading){
+    heading.style.display = !activeCategory || heading.dataset.category === activeCategory ? "" : "none";
+  });
+
+  if(searchTerm && !visibleCards){
+    toast.textContent = "No matching app found.";
+    toast.classList.add("show");
+  } else if(!searchTerm || visibleCards){
+    toast.classList.remove("show");
+  }
+}
+
+appSearch.addEventListener("input", applyAppFilters);
+
+document.querySelectorAll(".categoryLink, .categoryMenuLink").forEach(function(categoryLink){
+  categoryLink.addEventListener("click", function(){
+    if(categoryLink.dataset.filter){
+      activeCategory = categoryLink.dataset.filter;
+      appSearch.value = "";
+      applyAppFilters();
+      document.getElementById("extra-downloads").scrollIntoView({behavior:"smooth"});
+    }
+
+    toast.textContent = categoryLink.dataset.category + " category selected.";
+    toast.classList.add("show");
+
+    setTimeout(function(){
+      toast.classList.remove("show");
+    },1800);
+  });
+});
+
+</script>
+
+</body>
+</html>
