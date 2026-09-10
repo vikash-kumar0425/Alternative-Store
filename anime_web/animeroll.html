@@ -208,6 +208,7 @@
     display: flex;
     transition: transform 0.5s cubic-bezier(0.55,0,0.1,1);
     height: 100%;
+    touch-action: pan-y;
   }
   .slide {
     min-width: 100%;
@@ -460,9 +461,11 @@
   /* Responsive for mobile */
   @media (max-width: 600px) {
     body {
-      max-width: 350px;
-      height: 600px;
-      overflow: hidden;
+      max-width: 100%;
+      min-height: 100vh;
+      height: auto;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
     header {
       padding: 8px 12px;
