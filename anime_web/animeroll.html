@@ -199,6 +199,7 @@
   .banner-slider {
     position: relative;
     width: 100%;
+    height: 520px;
     max-height: 520px;
     overflow: hidden;
     border-radius: 10px;
@@ -469,48 +470,67 @@
     }
     header {
       padding: 8px 12px;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    header > div:first-child {
+      width: 100%;
+      flex-wrap: wrap;
     }
     header .logo {
       font-size: 1.5em;
     }
     nav {
-      display: none !important;
-      position: fixed;
-      top: 56px;
-      left: 0;
-      right: 0;
-      background-color: var(--color-background-header);
-      border-bottom: 1px solid var(--color-primary-dark);
-      padding: 12px 20px;
-      flex-direction: column;
-      gap: 14px;
-      box-shadow: 0 2px 12px var(--color-shadow);
-      z-index: 1000;
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.35s ease;
+      display: flex !important;
+      position: static;
+      width: 100%;
+      flex-direction: row;
+      gap: 8px;
+      padding: 8px 0 2px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      order: 3;
     }
-    nav.open {
-      max-height: 220px;
+    nav::-webkit-scrollbar {
+      display: none;
     }
     nav a {
-      margin: 0;
-      font-size: 1.1em;
+      flex: 0 0 auto;
+      margin: 0 !important;
+      padding: 8px 12px !important;
+      font-size: .85em !important;
     }
     .hamburger {
-      display: flex;
+      display: none;
+    }
+    header > .login-btn {
+      flex: 0 0 auto;
+      margin: 0 !important;
+      padding: 8px 10px !important;
+      font-size: .78em !important;
     }
     .search-container {
-      margin: 0 8px;
-      min-width: 120px;
-      flex-grow: 1;
+      flex: 1 1 150px;
+      width: auto;
+      min-width: 140px;
+      margin: 0;
+    }
+    .user-icon {
+      flex: 0 0 36px;
+      margin: 0;
+    }
+    .toggle-switch {
+      flex: 0 0 48px;
+      margin: 0 0 0 4px;
     }
     main {
       padding: 8px 10px;
       gap: 12px;
     }
     .banner-slider {
+      height: 180px;
       max-height: 180px;
       border-radius: 8px;
       margin-bottom: 6px;
@@ -760,15 +780,12 @@
       <div class="slide" style="background-image:url('https://sgimage.netmarble.com/images/netmarble/sololv/20240318/fxbt1710761341766.jpg');" tabindex="0" role="group" aria-roledescription="slide" aria-label="Demon Slayer">
         <div class="slide-title">Solo Leveling </div>
       </div>
-      <button class="slider-button left" aria-label="Previous banner" tabindex="0">&#9664;</button>
       <div class="slide" style="background-image:url('C:/Users/Vikash Kumar/Desktop/anime_web/photoanime/OnePiece.jpg');" tabindex="0" role="group" aria-roledescription="slide" aria-label="One Piece">
         <div class="slide-title">One Piece</div>
       </div>
-      <button class="slider-button left" aria-label="Previous banner" tabindex="0">&#9664;</button>
       <div class="slide" style="background-image:url('https://wallpapers.com/images/file/one-punch-man-pictures-ws2evfrf7qh2zyvn.jpg');" tabindex="0" role="group" aria-roledescription="slide" aria-label="My Hero Academia">
         <div class="slide-title">One punch man </div>
       </div>
-      <button class="slider-button left" aria-label="Previous banner" tabindex="0">&#9664;</button>
       <div class="slide" style="background-image:url('https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/09/jujutsu-kaisen.jpg');" tabindex="0" role="group" aria-roledescription="slide" aria-label="My Hero Academia">
         <div class="slide-title">jujutsu kaisen</div>
       </div>
